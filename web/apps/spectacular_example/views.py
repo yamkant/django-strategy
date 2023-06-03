@@ -8,8 +8,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import serializers, status
-from test_app.serializers import CustomUserSerializer, UserSerializer
-from test_app.schemas import USER_QUERY_PARAM_USERNAME_EXAMPLES, USER_QUERY_PARAM_DATE_JOINED_EXAMPLES, USER_CREATE_EXAMPLES
+from spectacular_example.serializers import CustomUserSerializer, UserSerializer
+from spectacular_example.schemas import USER_QUERY_PARAM_USERNAME_EXAMPLES, USER_QUERY_PARAM_DATE_JOINED_EXAMPLES, USER_CREATE_EXAMPLES
 
 # Create your views here.
 @extend_schema_view(

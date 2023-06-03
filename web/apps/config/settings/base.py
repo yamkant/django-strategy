@@ -72,7 +72,8 @@ INSTALLED_APPS = [
     'drf_spectacular',
 
     'config',
-    'spectacular_example'
+    # 'spectacular_example',
+    'members',
 ]
 
 MIDDLEWARE = [
@@ -160,3 +161,6 @@ STATIC_ROOT = 'staticfiles'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ATUH_USER로 CUSTOM USER 사용
+AUTH_USER_MODEL = 'members.Member'
