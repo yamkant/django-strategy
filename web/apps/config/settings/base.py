@@ -28,6 +28,37 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+SPECTACULAR_SETTINGS = {
+    # General schema metadata. Refer to spec for valid inputs
+    # https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#openapi-object
+    'TITLE': 'drf-spectacular API Document',
+    'DESCRIPTION': 'drf-specatular를 사용하여 생성한 API 문서입니다.',
+    'CONTACT': {'name': 'kant', 'url': 'http://www.example.com/support', 'email': 'dev.yamkim@gmail.com'},
+    'SWAGGER_UI_SETTINGS': {
+        # https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/  <- 여기 들어가면 어떤 옵션들이 더 있는지 알수있습니다.
+        'dom_id': '#swagger-ui',
+        'layout': 'BaseLayout',
+        'deepLinking': True, # API 클릭마다 SwaggerUI의 url 변경
+        'persistAuthorization': True, # 등록된 Authorize 정보 유지
+        'displayOperationId': True, # URI id 값 노출
+        'filter': True,  # 'Filter by Tag' 검색 허용
+    },
+    'LICENSE': {
+        'name': 'MIT License',
+    },
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,  # OAS3 Meta정보 API를 비노출 처리합니다.
+
+    # https://www.npmjs.com/package/swagger-ui-dist 해당 링크에서 최신버전을 확인후 취향에 따라 version을 수정해서 사용하세요.
+    'SWAGGER_UI_DIST': '//unpkg.com/swagger-ui-dist@3.38.0',  # Swagger UI 버전을 조절할수 있습니다.
+    
+}
+
+# Django Spectacular 설정 추가
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,7 +68,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'config'
+    'rest_framework',
+    'drf_spectacular',
+
+    'config',
+    'spectacular_example'
 ]
 
 MIDDLEWARE = [
@@ -125,4 +160,3 @@ STATIC_ROOT = 'staticfiles'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
