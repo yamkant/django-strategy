@@ -1,0 +1,18 @@
+version: "3"
+services:
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+
+  web:
+    build: ./web
+    container_name: web
+    command: "/bin/bash /apps/entrypoint.sh"
+    env_file:
+      - ./web/.env
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.development
