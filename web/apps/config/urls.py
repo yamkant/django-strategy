@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path('users/', include('spectacular_example.urls')),
     path('member/', include('members.urls.members')),
+    path('auth/', include('members.urls.auth')),
 ]
 
 urlpatterns += [

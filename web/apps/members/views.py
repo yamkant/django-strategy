@@ -23,3 +23,13 @@ from members.serializers import MemberCreateSerializer
 class MemberCreateAPIView(CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = MemberCreateSerializer
+
+
+class TokenCreateAPIView(jwt_views.TokenObtainPairView):
+    pass
+
+class TokenRefreshAPIView(jwt_views.TokenRefreshView):
+    pass
+    
+class TokenBlackListAPIView(jwt_views.TokenBlacklistView):
+    pass
