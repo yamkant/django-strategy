@@ -2,7 +2,11 @@ from django.shortcuts import render
 
 # Create your views here.
 from rest_framework.generics import CreateAPIView
-from rest_framework.permissions import AllowAny
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt import views as jwt_views
 
 from members.serializers import (
@@ -23,6 +27,16 @@ from members.serializers import MemberCreateSerializer
 class MemberCreateAPIView(CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = MemberCreateSerializer
+
+@extend_schema(
+    tags=["사용자"],
+    summary="로그인 여부를 체크합니다.",
+    # examples = USER_CREATE_EXAMPLES,
+)
+class MemberLoginCheckAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        return Response({"message": "This user is logged in."}, status=status.HTTP_200_OK)
 
 
 class TokenCreateAPIView(jwt_views.TokenObtainPairView):
