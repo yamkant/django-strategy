@@ -1,10 +1,13 @@
 from django.test import TestCase
 from typing import Optional
+from django.core.serializers.base import Serializer
 
 # Create your tests here.
 from django.test import TestCase, override_settings
 from members.models import Member
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+from core.serializers import CreateSerializer
 
 from django.db import connection, reset_queries
 
@@ -47,6 +50,48 @@ class E2EBaseTestCase(TestCase):
             **header
         )
         self.assertEqual(expectedStatusCode, response.status_code)
+    
+
+    @classmethod
+    def createMember(cls, **kwargs):
+        return Member.objects.createMember(**kwargs)
+
+    def getToken(self, member):
+        if not member:
+            return None
+        serializer = TokenObtainPairSerializer(
+            data={
+                "phone": member.phone,
+                "password": 5933,
+            }
+        )
+        serializer.is_valid(raise_exception=True)
+        return serializer.validated_data
+    
+    def getAuthHeaderByToken(self, token):
+        if not token:
+            return {}
+        return {"HTTP_AUTHORIZATION": f'Bearer {token["access"]}'}
+
+class IntegrationBaseTestCase(TestCase):
+    def serializer_test(
+        self,
+        expectedQueryCount: Optional[int] = None,
+        serializer: Optional[Serializer] = None,
+        expectedResult: Optional[bool] = None,
+        **data,
+    ):
+
+        if serializer.serializer_type == "create":
+            targetSerializer = serializer(data=data)
+            if targetSerializer.is_valid():
+                instance = targetSerializer.create(data)
+            else:
+                self.assertEqual(expectedResult, False)
+                # raise Exception(targetSerializer.errors)
+                return None
+            self.assertEqual(expectedResult, True)
+            return instance
     
 
     @classmethod
