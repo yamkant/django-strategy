@@ -1,8 +1,8 @@
 from django.urls import reverse
-from core.tests import IntegrationBaseTestCase
+from core.tests import IntegrationSerializerTestCase
 from members.serializers import MemberCreateSerializer
 
-class MemberCreateSerializerTest(IntegrationBaseTestCase):
+class MemberCreateSerializerTest(IntegrationSerializerTestCase):
     serializer = MemberCreateSerializer
 
     @classmethod
@@ -15,7 +15,6 @@ class MemberCreateSerializerTest(IntegrationBaseTestCase):
     def test_success(self):
         instance = self.serializer_test(
             expectedQueryCount=2,
-            serializer=self.serializer,
             expectedResult=True,
             phone="01050175933",
             password="5933",
@@ -26,7 +25,6 @@ class MemberCreateSerializerTest(IntegrationBaseTestCase):
     def test_mismatch_password(self):
         instance = self.serializer_test(
             expectedQueryCount=1,
-            serializer=self.serializer,
             expectedResult=False,
             phone="01050175933",
             password="5933",
@@ -36,7 +34,6 @@ class MemberCreateSerializerTest(IntegrationBaseTestCase):
     def test_empty_phone(self):
         instance = self.serializer_test(
             expectedQueryCount=0,
-            serializer=self.serializer,
             expectedResult=False,
             phone="",
             password="5933",
@@ -45,7 +42,6 @@ class MemberCreateSerializerTest(IntegrationBaseTestCase):
 
     def test_register_repeated_phone(self):
         instance = self.serializer_test(
-            serializer=self.serializer,
             expectedResult=True,
             phone="01050175933",
             password="5933",
@@ -53,7 +49,6 @@ class MemberCreateSerializerTest(IntegrationBaseTestCase):
         )
         instance = self.serializer_test(
             expectedQueryCount=1,
-            serializer=self.serializer,
             expectedResult=False,
             phone="01050175933",
             password="5933",

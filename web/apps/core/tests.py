@@ -1,15 +1,14 @@
 from django.test import TestCase
-from typing import Optional
+from typing import Optional, Dict
 from django.core.serializers.base import Serializer
 
-# Create your tests here.
-from django.test import TestCase, override_settings
+# e2e tests
 from members.models import Member
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from core.serializers import CreateSerializer
-
+# common
 from django.db import connection, reset_queries
+from django.test import TestCase, override_settings
 
 
 def wrapFunctionForQueryCount(count):
@@ -73,30 +72,42 @@ class E2EBaseTestCase(TestCase):
             return {}
         return {"HTTP_AUTHORIZATION": f'Bearer {token["access"]}'}
 
-class IntegrationBaseTestCase(TestCase):
+class TestSerializerHelper():
+    def __init__(self, serializer: Serializer, queryCnt: int = 0):
+        self.serializer = serializer
+        self.queryCnt = queryCnt
+
+    def _create(self, data):
+        serializer = self.serializer(data=data)
+        if serializer.is_valid():
+            instance = serializer.create(data)
+            return instance
+        else:
+            serializer.is_valid(raise_exception=True)
+    
+    def create(self, data):
+        createData = self._create
+        if self.queryCnt:
+            createData = wrapFunctionForQueryCount(self.queryCnt)(self._create)
+        return createData(data)
+    
+    def run(self, data: Optional[Dict]):
+        if self.serializer.serializer_type == "create":
+            return self.create(data)
+
+class IntegrationSerializerTestCase(TestCase):
     def serializer_test(
         self,
         expectedQueryCount: Optional[int] = None,
-        serializer: Optional[Serializer] = None,
         expectedResult: Optional[bool] = None,
         **data,
     ):
-        def createData(serializer, data):
-            targetSerializer = serializer(data=data)
-            if targetSerializer.is_valid():
-                instance = targetSerializer.create(data)
-                return instance
-            else:
-                return None
-        if expectedQueryCount:
-            createData = wrapFunctionForQueryCount(expectedQueryCount)(createData)
+        testSerializerHelper = TestSerializerHelper(self.serializer, expectedQueryCount)
 
         instance = None
-        testFlag = False
-        if serializer.serializer_type == "create":
-            instance = createData(serializer, data)
-            if instance:
-                testFlag = True
-        self.assertEqual(expectedResult, testFlag)
+        try:
+            instance = testSerializerHelper.run(data)
+            self.assertEqual(expectedResult, True)
+        except Exception as e:
+            self.assertEqual(expectedResult, False)
         return instance
-    
