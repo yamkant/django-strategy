@@ -16,6 +16,7 @@ jobs:
         python-version: [3.9]
     env:
       working-directory: ./web/apps/
+      setting-directory: ./web/
 
     steps:
     - uses: actions/checkout@v3
@@ -35,7 +36,7 @@ jobs:
       run: |
         echo "${{ secrets.ENV_FILE }}" > .env
         source env2Shell.sh
-      working-directory: ${{ env.working-directory }}
+      working-directory: ${{ env.setting-directory }}
 
     - name: Run Tests
       run: |
