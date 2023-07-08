@@ -26,9 +26,9 @@ jobs:
       run: |
         python3 -m pip install --upgrade pip
         pip install -r requirements.txt
-      working-directory: ${{ env.working-directory }}
     - name: Run Tests
       run: |
         echo "${{ secrets.ENV_FILE }}" > .env
         python3 manage.py test --settings=config.settings.development
-    
+        python3 manage.py test
+      working-directory: ${{ env.working-directory }}
