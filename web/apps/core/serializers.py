@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 class CreateSerializer(serializers.ModelSerializer):
     representation_serializer_class = None
+    serializer_type = "create"
 
     def to_representation(self, instance):
         return self.representation_serializer_class(instance=instance).data
