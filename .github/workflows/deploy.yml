@@ -34,9 +34,7 @@ jobs:
     - name: Create env File
       run: |
         echo "${{ secrets.ENV_FILE }}" > .env
-        set -a
-        source .env
-        set +a
+        source env2Shell.sh
       working-directory: ${{ env.working-directory }}
 
     - name: Run Tests
