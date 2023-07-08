@@ -35,7 +35,7 @@ jobs:
     - name: Create env File
       run: |
         # echo "${{ secrets.ENV_FILE }}" > .env
-        export DJANGO_SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}"
+        export DJANGO_SECRET_KEY='${{ secrets.DJANGO_SECRET_KEY }}'
         export DJANGO_SETTINGS_MODULE="${{ secrets.DJANGO_SETTINGS_MODULE }}"
       working-directory: ${{ env.setting-directory }}
 
