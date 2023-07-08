@@ -36,7 +36,10 @@ jobs:
       run: |
         echo "${{ secrets.ENV_FILE }}" > .env
         source env2Shell.sh
+        export DJANGO_SECRET_KEY
+        export DJANGO_SETTINGS_MODULE
         export
+        env
       working-directory: ${{ env.setting-directory }}
 
     - name: Run Tests
