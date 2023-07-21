@@ -2,10 +2,10 @@ name: CI
 on:
   push:
     branches:
-      - 'feat/**'
+      - 'feat/#7'
   pull_request:
     branches:
-      - 'feat/**'
+      - 'feat/#7'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -37,6 +37,5 @@ jobs:
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
         DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
       run: |
-        python3 manage.py test --settings=config.settings.development
         python3 manage.py test
       working-directory: ${{ env.working-directory }}
