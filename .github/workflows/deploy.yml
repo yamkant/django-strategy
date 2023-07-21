@@ -1,0 +1,41 @@
+name: CI
+on:
+  push:
+    branches:
+      - 'feat/#7'
+  pull_request:
+    branches:
+      - 'feat/#7'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        # python-version: [3.7, 3.8, 3.9]
+        python-version: [3.9]
+    env:
+      working-directory: ./web/apps/
+      setting-directory: ./web/
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install Dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        pip install -r requirements.txt
+      working-directory: ${{ env.working-directory }}
+    
+    - name: Run Tests
+      env:
+        DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+        DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
+      run: |
+        python3 manage.py test
+      working-directory: ${{ env.working-directory }}
