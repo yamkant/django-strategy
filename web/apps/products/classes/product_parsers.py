@@ -37,13 +37,17 @@ class ProductInfoParser:
 
 class ParsingHandler:
     """URL로부터 정보를 파싱하는 클래스입니다."""
-    def __init__(self, url) -> None:
-        self._url = url
+    def __init__(self, endpoint="") -> None:
+        self._endpoint = endpoint
         self._html_text = ""
 
     @property
-    def url(self):
-        return self._url
+    def endpoint(self):
+        return self._endpoint
+    
+    @endpoint.setter
+    def endpoint(self, value):
+        self._endpoint = value
 
     @property
     def html_text(self):
@@ -51,7 +55,7 @@ class ParsingHandler:
     
     def set_info_from_url(self):
         headers = {'Accept': '*/*'}
-        response = requests.get(self._url, headers=headers)
+        response = requests.get(self._endpoint, headers=headers)
         self._html_text = response.text
     
     def get_info_by_property(self, property):
