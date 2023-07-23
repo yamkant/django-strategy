@@ -63,11 +63,14 @@ class OgDataPraserTest(unittest.TestCase):
         'https://www.arket.com/ko-kr/men/shirts/product.lightweight-oxford-shirt-white.1076900001.html',
         "라이트웨이트 옥스포드 셔츠 - ARKET",
         "https://image.thehyundai.com/static/4/3/8/61/A1/hnm40A1618341_22_240.jpg"
+    ), (
+        "https://www.ssfshop.com/8-seconds/GM0023031489706/good?utag=ref_tpl:111702$ref_cnr:22468$ref_br:8SBSS$set:%EB%82%A8%EC%84%B1&dspCtgryNo=&brandShopNo=BDMA07A01&brndShopId=8SBSS&leftBrandNM=8SECONDS_8SBSS",
+        "오버핏 오픈칼라 티셔츠 - 블랙",
+        "https://img.ssfshop.com/cmd/LB_750x1000/src/https://img.ssfshop.com/goods/8SBR/23/03/14/GM0023031489706_0_ORGINL_20230317111739358.jpg"
     )
 ))
 def test_get_info(endpoint, expected_title, expected_image):
     parse_handler = ParsingHandler(endpoint)
-    parse_handler.endpoint = endpoint
 
     parse_handler.set_info_from_url()
     assert parse_handler.get_info_by_property('title') == expected_title
@@ -81,7 +84,6 @@ def test_get_info_ssg():
     parse_handler = ParsingHandler(endpoint)
     parse_handler.url = endpoint
     parse_handler.set_info_from_url()
-    print(parse_handler.html_text)
     # logger.info(self.parse_handler.get_info_by_property('title'))
     # expected_og_title = "[TIME HOMME] 와이드 데님 팬츠"
     # expected_og_image = "https://cdn-img.thehandsome.com/studio/goods/TH/2C/FW/TH2C8NPC677N_DN_W01.jpg?rs=684X1032"

@@ -2,6 +2,7 @@ from typing import Any
 import requests
 from bs4 import BeautifulSoup
 from enum import Enum
+import os
 
 class OgDataParserException(Exception):
     pass
@@ -23,6 +24,8 @@ class OgDataParser:
         valid_soup = self._get_valid_soup() 
         og_data = valid_soup.select_one(f'meta[property="og:{property}"]')
 
+        if not og_data:
+            raise OgDataParserException("og data가 존재하지 않습니다.")
         if og_data.get("content") == None:
             raise OgDataParserException("og data에 content가 없습니다.")
         return og_data.get("content")
@@ -54,8 +57,11 @@ class ParsingHandler:
         return self._html_text
     
     def set_info_from_url(self):
-        headers = {'Accept': '*/*'}
-        response = requests.get(self._endpoint, headers=headers)
+        headers = {
+            "User-Agent": os.environ.get("HTTP_USER_AGENT"),
+        }
+        response = requests.get(self._endpoint, headers=headers, verify=False)
+        response.raise_for_status()
         self._html_text = response.text
     
     def get_info_by_property(self, property):
