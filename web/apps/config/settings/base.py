@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     'config',
     # 'spectacular_example',
     'members',
+    'products'
 ]
 
 MIDDLEWARE = [
