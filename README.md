@@ -6,3 +6,5 @@
 - custom user, JWT 인증/인가
 - unittest, integrity test (pytest 모듈)
 - Open API 문서화 설정 (Sepectacular[Swagger])
+
+> 주의: git clone해서 사용시, `.env` 파일 .gitignore에 추가하고 커스터마이즈하기
