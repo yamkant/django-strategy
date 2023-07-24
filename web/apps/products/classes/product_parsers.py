@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 from enum import Enum
 import os
+from abc import ABC, abstractmethod
 
 class OgDataParserException(Exception):
     pass
@@ -20,7 +21,7 @@ class OgDataParser:
 
 
     # FIXME: head가 없는 경우, og_data가 NoneType인 경우, og_data가 'content' 키를 갖지 않는 경우 처리
-    def get_og_data_from_soup(self, property):
+    def get_data_from_soup(self, property):
         valid_soup = self._get_valid_soup() 
         og_data = valid_soup.select_one(f'meta[property="og:{property}"]')
 
@@ -29,6 +30,20 @@ class OgDataParser:
         if og_data.get("content") == None:
             raise OgDataParserException("og data에 content가 없습니다.")
         return og_data.get("content")
+
+class StoreDataParser:
+    @abstractmethod
+    def get_data_from_soup(self, property):
+        pass
+
+class SongzioDataParser(StoreDataParser):
+    @staticmethod
+    def get_data_from_soup(self, property):
+        print(property)
+        pass
+
+
+
 
 class ProductInfoParser:
     def __init__(self, title):
@@ -64,6 +79,9 @@ class ParsingHandler:
         response.raise_for_status()
         self._html_text = response.text
     
-    def get_info_by_property(self, property):
+    def get_info_by_og(self, property):
         og_data_parser = OgDataParser(self.html_text)
-        return og_data_parser.get_og_data_from_soup(property)
+        return og_data_parser.get_data_from_soup(property)
+
+    def get_info_by_store_parser(self, store_parser, property):
+        return store_parser.get_data_from_soup(property)
