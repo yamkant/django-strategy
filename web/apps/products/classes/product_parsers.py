@@ -8,9 +8,17 @@ from abc import ABC, abstractmethod
 class OgDataParserException(Exception):
     pass
 
+class StoreDataParser:
+    @abstractmethod
+    def set_soup(self, html_text):
+        pass
+    @abstractmethod
+    def get_data_from_soup(self, property):
+        pass
 
-class OgDataParser:
-    def __init__(self, html_text) -> None:
+
+class OgDataParser(StoreDataParser):
+    def set_soup(self, html_text):
         self._soup = BeautifulSoup(html_text, 'html.parser')
     
     # NOTE: validation 영역 추가하기
@@ -31,18 +39,12 @@ class OgDataParser:
             raise OgDataParserException("og data에 content가 없습니다.")
         return og_data.get("content")
 
-class StoreDataParser:
-    @abstractmethod
-    def get_data_from_soup(self, property):
-        pass
-
 class SongzioDataParser(StoreDataParser):
-    @staticmethod
+    def set_soup(self, html_text):
+        self._soup = BeautifulSoup(html_text, 'html.parser')
+
     def get_data_from_soup(self, property):
-        print(property)
-        pass
-
-
+        print(self._soup.select_one('div'))
 
 
 class ProductInfoParser:
@@ -55,8 +57,9 @@ class ProductInfoParser:
 
 class ParsingHandler:
     """URL로부터 정보를 파싱하는 클래스입니다."""
-    def __init__(self, endpoint="") -> None:
+    def __init__(self, store_data_parser, endpoint="") -> None:
         self._endpoint = endpoint
+        self._store_data_parser = store_data_parser
         self._html_text = ""
 
     @property
@@ -79,9 +82,6 @@ class ParsingHandler:
         response.raise_for_status()
         self._html_text = response.text
     
-    def get_info_by_og(self, property):
-        og_data_parser = OgDataParser(self.html_text)
-        return og_data_parser.get_data_from_soup(property)
-
-    def get_info_by_store_parser(self, store_parser, property):
-        return store_parser.get_data_from_soup(property)
+    def get_info(self, property):
+        self._store_data_parser.set_soup(self._html_text)
+        return self._store_data_parser.get_data_from_soup(property)
